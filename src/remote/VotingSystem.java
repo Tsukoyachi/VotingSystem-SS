@@ -9,11 +9,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class VotingSystem {
+public class VotingSystem extends UnicastRemoteObject implements VotingSystemInterface {
     private List<Candidate> candidates;
     private List<User> users;
     public static String RESSOURCE_FOLDER = "ressource/";
@@ -57,7 +58,11 @@ public class VotingSystem {
         return user.askForOTP();
     }
 
-    public synchronized Boolean emitVote(String studentNumber, String otp, List<VoteInterface> votes) throws RemoteException, BadCredentialsException{
+    public synchronized Boolean emitVote(String studentNumber, String otp, List<VoteInterface> votes) throws RemoteException, BadCredentialsException {
+        if(this.users.stream().filter(e -> e.getVotes() == null).toList().isEmpty()) {
+            return false;
+        }
+
         // Check student number and OTP
         User user = users.stream().filter(e -> e.getStudentNumber().equals(studentNumber)).findFirst().orElse(null);
         if(user == null) {
@@ -86,21 +91,28 @@ public class VotingSystem {
         }
 
         if(this.users.stream().filter(e -> e.getVotes() == null).toList().isEmpty()) {
-            this.triggerEndOfElection();
+            System.out.print(this.checkResultOfElection());
         }
 
         return true;
     }
 
-    private void triggerEndOfElection() {
+    public String checkResultOfElection() throws RemoteException {
+        if(!this.users.stream().filter(e -> e.getVotes() == null).toList().isEmpty()) {
+            return "The election is not yet finished, please check the result later.\n";
+        }
+        StringBuilder res = new StringBuilder();
         List<Candidate> tmp = candidates.stream().sorted(Comparator.comparing(Candidate::getScore).reversed()).toList();
         assert !tmp.isEmpty();
-        System.out.println("The winner of the election is : " + tmp.get(0).toString() + " with " + tmp.get(0).getScore() + " votes");
-        System.out.println("For the general results :");
+        res.append("The winner of the election is : ").append(tmp.get(0).toString()).append(" with ").append(tmp.get(0).getScore()).append(" votes\n");
+        res.append("For the general results :\n");
         for(Candidate candidate : tmp) {
-            System.out.println(" - "+candidate.toString() + " with " + candidate.getScore() + " votes");
+            res.append(" - ").append(candidate.toString()).append(" with ").append(candidate.getScore()).append(" votes\n");
         }
+        return res.toString();
     }
+
+
 
     private void undoPreviousVote(List<VoteInterface> votes) throws RemoteException {
         for(VoteInterface vote : votes) {

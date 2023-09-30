@@ -19,10 +19,12 @@ public class Candidate {
 
     public void addVote(int number) {
         this.score += number;
+        System.out.println(" - Added "+number+" point to the candidate "+this);
     }
 
     public void deleteVote(int number) {
         this.score -= number;
+        System.out.println(" - Removed "+number+" point to the candidate "+this);
     }
 
     public int getScore() {
