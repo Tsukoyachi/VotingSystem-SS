@@ -1,6 +1,7 @@
 package remote;
 
 import client.VoteInterface;
+import exception.BadCredentialsException;
 import exception.HaveAlreadyAskedOTP;
 import helper.OTPGenerator;
 
@@ -47,5 +48,11 @@ public class User {
 
     public Boolean didUserAlreadyAskForOTP() {
         return this.haveAskedForOTP;
+    }
+
+    public void checkOTP(String otp) throws BadCredentialsException {
+        if(!this.password.equals(otp)) {
+            throw new BadCredentialsException("The one time password you provided is incorrect");
+        }
     }
 }
