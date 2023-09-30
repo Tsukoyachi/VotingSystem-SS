@@ -74,13 +74,32 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
             return false;
         }
 
+        System.out.println("Vote of the student "+studentNumber+" : ");
+
         // Undo previous vote
         if(user.getVotes() != null) {
-            this.undoPreviousVote(user.getVotes());
+            for(Pair<Integer,Integer> vote : user.getVotes()) {
+                Candidate candidate = null;
+                for (Candidate e : candidates) {
+                    if (e.getRank() == vote.getFirst()) {
+                        candidate = e;
+                        break;
+                    }
+                }
+                if(candidate != null) {
+                    candidate.deleteVote(vote.getSecond());
+                }
+            }
         }
 
         // Apply new vote
-        user.setVotes(votes);
+        user.setVotes(votes.stream().map(e -> {
+            try {
+                return new Pair<Integer,Integer>(e.getRank(),e.getValue());
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }
+        }).toList());
 
         for(VoteInterface vote : votes) {
             int rank = vote.getRank();
@@ -110,23 +129,6 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
             res.append(" - ").append(candidate.toString()).append(" with ").append(candidate.getScore()).append(" votes\n");
         }
         return res.toString();
-    }
-
-
-
-    private void undoPreviousVote(List<VoteInterface> votes) throws RemoteException {
-        for(VoteInterface vote : votes) {
-            Candidate candidate = null;
-            for (Candidate e : candidates) {
-                if (e.getRank() == vote.getRank()) {
-                    candidate = e;
-                    break;
-                }
-            }
-            if(candidate != null) {
-                candidate.deleteVote(vote.getValue());
-            }
-        }
     }
 
     private Boolean checkNewVotes(List<VoteInterface> votes) throws RemoteException {

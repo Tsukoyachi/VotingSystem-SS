@@ -14,17 +14,17 @@ public class Candidate {
     }
 
     public String toString() {
-        return firstName + " " + lastName + "(rank " + rank + ")";
+        return firstName + " " + lastName + " (rank " + rank + ")";
     }
 
     public void addVote(int number) {
         this.score += number;
-        System.out.println(" - Added "+number+" point to the candidate "+this);
+        System.out.println(" - Added "+number+" point to the candidate "+this+" , currently have a score of "+score);
     }
 
     public void deleteVote(int number) {
         this.score -= number;
-        System.out.println(" - Removed "+number+" point to the candidate "+this);
+        System.out.println(" - Removed "+number+" point to the candidate "+this+" , currently have a score of "+score);
     }
 
     public int getScore() {

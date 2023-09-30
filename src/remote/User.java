@@ -10,7 +10,7 @@ import java.util.List;
 public class User {
     private String studentNumber;
     private String password;
-    private List<VoteInterface> votes;
+    private List<Pair<Integer, Integer>> votes;
     private Boolean haveAskedForOTP;
 
     public User(String studentNumber, int passwordLength) {
@@ -24,11 +24,11 @@ public class User {
         return studentNumber;
     }
 
-    public List<VoteInterface> getVotes() {
+    public List<Pair<Integer,Integer>> getVotes() {
         return votes;
     }
 
-    public void setVotes(List<VoteInterface> votes) {
+    public void setVotes(List<Pair<Integer,Integer>> votes) {
         this.votes = votes;
     }
 
