@@ -1,6 +1,5 @@
 package remote;
 
-import client.VoteInterface;
 import exception.BadCredentialsException;
 import exception.HaveAlreadyAskedOTP;
 import helper.OTPGenerator;

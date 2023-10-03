@@ -1,6 +1,8 @@
 import remote.VotingSystem;
 import remote.VotingSystemInterface;
 
+import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.registry.LocateRegistry;
@@ -17,4 +19,5 @@ public class Main {
         }
         System.out.println("Server side is launched !");
     }
+
 }
