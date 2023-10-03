@@ -1,12 +1,16 @@
 package remote;
 
-public class Candidate {
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class Candidate extends UnicastRemoteObject implements CandidateInterface{
     private String firstName;
     private String lastName;
     private int rank;
     private int score;
 
-    public Candidate(String firstName, String lastName, int rank) {
+    public Candidate(String firstName, String lastName, int rank) throws RemoteException {
+        super();
         this.firstName = firstName;
         this.lastName = lastName;
         this.rank = rank;
