@@ -9,7 +9,7 @@ public class Candidate extends UnicastRemoteObject implements CandidateInterface
     private int rank;
     private int score;
 
-    private Pitch pitch;
+    private PitchInterface pitch;
 
     public Candidate(String firstName, String lastName, int rank, String pitchType, String pitchElement) throws RemoteException {
         super();
@@ -47,7 +47,7 @@ public class Candidate extends UnicastRemoteObject implements CandidateInterface
         return this.rank;
     }
 
-    public Pitch getPitch() throws RemoteException {
+    public PitchInterface getPitch() throws RemoteException {
         return this.pitch;
     }
 }

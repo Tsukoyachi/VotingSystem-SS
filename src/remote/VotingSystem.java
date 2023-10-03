@@ -44,7 +44,7 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
                     candidates.add(new Candidate(values[0], values[1], candidates.size()+1, "", null));
             }
         } catch (IOException ignored) {
-            throw new IOException("Failed to read candidates file");
+            throw new IOException("Failed to read candidates file"+ignored.getMessage());
         }
 
 
@@ -54,7 +54,7 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
     public List<CandidateInterface> askListOfCandidate() throws RemoteException {
         return candidates;
     }
-    public Pitch getPitchForCandidate(CandidateInterface candidate) throws RemoteException {
+    public PitchInterface getPitchForCandidate(CandidateInterface candidate) throws RemoteException {
         return candidate.getPitch();
     }
 
