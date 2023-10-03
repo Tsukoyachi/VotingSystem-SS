@@ -37,9 +37,11 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
             while ((line = bufferedReader.readLine()) != null) {
                 String[] values = line.split(",");
                 if(values[2].equals("video"))
-                    candidates.add(new CandidateVideo(values[0], values[1],candidates.size() + 1, values[3]));
+                    candidates.add(new Candidate(values[0], values[1],candidates.size() + 1, "video",RESSOURCE_FOLDER + values[3]));
                 else if(values[2].equals("text"))
-                    candidates.add(new CandidateText(values[0], values[1],candidates.size() + 1, values[3]));
+                    candidates.add(new Candidate(values[0], values[1],candidates.size() + 1, "text",values[3]));
+                else
+                    candidates.add(new Candidate(values[0], values[1], candidates.size()+1, "", null));
             }
         } catch (IOException ignored) {
             throw new IOException("Failed to read candidates file");
@@ -52,14 +54,8 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
     public List<CandidateInterface> askListOfCandidate() throws RemoteException {
         return candidates;
     }
-    public Object getPitchForCandidate(CandidateInterface candidate) throws RemoteException {
-        if (candidate instanceof CandidateVideo) {
-            return ((CandidateVideo) candidate).downloadPitch();
-        } else if (candidate instanceof CandidateText) {
-            return ((CandidateText) candidate).pitch;
-        } else {
-            return "No pitch available.";
-        }
+    public Pitch getPitchForCandidate(CandidateInterface candidate) throws RemoteException {
+        return candidate.getPitch();
     }
 
     public synchronized String askUserOTP(ClientInterface client) throws RemoteException, BadCredentialsException, HaveAlreadyAskedOTP {
@@ -116,7 +112,13 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
 
         for(VoteInterface vote : votes) {
             int rank = vote.getRank();
-            CandidateInterface candidate = candidates.stream().filter(e -> e.getRank() == rank).findFirst().orElse(null);
+            CandidateInterface candidate = candidates.stream().filter(e -> {
+                try {
+                    return e.getRank() == rank;
+                } catch (RemoteException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }).findFirst().orElse(null);
             if (candidate != null) {
                 candidate.addVote(vote.getValue());
             }
@@ -134,7 +136,17 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
             return "The election is not yet finished, please check the result later.\n";
         }
         StringBuilder res = new StringBuilder();
-        List<CandidateInterface> tmp = candidates.stream().sorted(Comparator.comparing(CandidateInterface::getScore).reversed()).toList();
+        List<CandidateInterface> tmp = new ArrayList<>();
+        for (CandidateInterface candidateInterface : candidates) {
+            tmp.add(candidateInterface);
+        }
+        tmp.sort(Comparator.comparing((CandidateInterface candidateInterface) -> {
+            try {
+                return candidateInterface.getScore();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        }).reversed());
         assert !tmp.isEmpty();
         res.append("The winner of the election is : ").append(tmp.get(0).toString()).append(" with ").append(tmp.get(0).getScore()).append(" votes\n");
         res.append("For the general results :\n");

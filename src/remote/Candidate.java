@@ -9,33 +9,45 @@ public class Candidate extends UnicastRemoteObject implements CandidateInterface
     private int rank;
     private int score;
 
-    public Candidate(String firstName, String lastName, int rank) throws RemoteException {
+    private Pitch pitch;
+
+    public Candidate(String firstName, String lastName, int rank, String pitchType, String pitchElement) throws RemoteException {
         super();
         this.firstName = firstName;
         this.lastName = lastName;
         this.rank = rank;
         this.score = 0;
+        if(!pitchType.isEmpty()) {
+            this.pitch = new Pitch(pitchType,pitchElement);
+        }
+        else {
+            this.pitch = null;
+        }
     }
 
-    public String toString() {
+    public String getPresentation() throws RemoteException {
         return firstName + " " + lastName + " (rank " + rank + ")";
     }
 
-    public void addVote(int number) {
+    public void addVote(int number) throws RemoteException {
         this.score += number;
         System.out.println(" - Added "+number+" point to the candidate "+this+" , currently have a score of "+score);
     }
 
-    public void deleteVote(int number) {
+    public void deleteVote(int number) throws RemoteException{
         this.score -= number;
         System.out.println(" - Removed "+number+" point to the candidate "+this+" , currently have a score of "+score);
     }
 
-    public int getScore() {
+    public int getScore() throws RemoteException {
         return this.score;
     }
 
-    public int getRank() {
+    public int getRank() throws RemoteException {
         return this.rank;
+    }
+
+    public Pitch getPitch() throws RemoteException {
+        return this.pitch;
     }
 }
