@@ -31,12 +31,12 @@ public class Candidate extends UnicastRemoteObject implements CandidateInterface
 
     public void addVote(int number) throws RemoteException {
         this.score += number;
-        System.out.println(" - Added "+number+" point to the candidate "+this+" , currently have a score of "+score);
+        System.out.println(" - Added "+number+" point to the candidate "+this.getPresentation()+" , currently have a score of "+score);
     }
 
     public void deleteVote(int number) throws RemoteException{
         this.score -= number;
-        System.out.println(" - Removed "+number+" point to the candidate "+this+" , currently have a score of "+score);
+        System.out.println(" - Removed "+number+" point to the candidate "+this.getPresentation()+" , currently have a score of "+score);
     }
 
     public int getScore() throws RemoteException {

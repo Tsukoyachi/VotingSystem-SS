@@ -148,10 +148,10 @@ public class VotingSystem extends UnicastRemoteObject implements VotingSystemInt
             }
         }).reversed());
         assert !tmp.isEmpty();
-        res.append("The winner of the election is : ").append(tmp.get(0).toString()).append(" with ").append(tmp.get(0).getScore()).append(" votes\n");
+        res.append("The winner of the election is : ").append(tmp.get(0).getPresentation()).append(" with ").append(tmp.get(0).getScore()).append(" votes\n");
         res.append("For the general results :\n");
         for(CandidateInterface candidate : tmp) {
-            res.append(" - ").append(candidate.toString()).append(" with ").append(candidate.getScore()).append(" votes\n");
+            res.append(" - ").append(candidate.getPresentation()).append(" with ").append(candidate.getScore()).append(" votes\n");
         }
         return res.toString();
     }

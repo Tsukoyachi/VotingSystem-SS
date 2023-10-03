@@ -9,8 +9,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class Pitch extends UnicastRemoteObject implements PitchInterface{
-    private String type;
-    private Object element;
+    private final String type;
+    private final Object element;
 
     public Pitch(String type, String element) throws RemoteException {
         super();
